@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /privacy
+Allow: /terms
+Disallow: /dashboard
+Disallow: /auth
+
+# Update to match your production domain
+Sitemap: https://your-app.example.com/sitemap.xml

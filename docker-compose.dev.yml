@@ -1,0 +1,41 @@
+# Development environment
+#
+# Starts only infrastructure services (database and email server).
+# The API and frontend run locally with hot-reload via `npm run dev`.
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up -d
+#   npm run dev
+
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: starter_app
+      POSTGRES_USER: starter_app
+      POSTGRES_PASSWORD: starter_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U starter_app -d starter_app"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── MailHog ─────────────────────────────────────────────────────────────────
+  # Captures all emails sent by the API instead of delivering them.
+  # Web UI at http://localhost:8025
+  mail:
+    image: mailhog/mailhog:latest
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP (set SMTP_HOST=localhost SMTP_PORT=1025 in api/.env)
+      - "8025:8025"  # Web UI
+
+volumes:
+  db_data_dev:

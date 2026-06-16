@@ -1,0 +1,66 @@
+# Production environment
+#
+# Requires a .env.prod file with environment variables.
+# See .env.prod.example for the template.
+#
+# Usage:
+#   cp .env.prod.example .env.prod
+#   (edit .env.prod with real values)
+#   docker compose --env-file .env.prod up -d --build
+
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-starter_app}
+      POSTGRES_USER: ${POSTGRES_USER:-starter_app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── API (Fastify) ───────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_PROVIDER: postgres
+      DATABASE_URL: ${DATABASE_URL}
+      WEB_URL: ${WEB_URL}
+      EMAIL_FROM: ${EMAIL_FROM:-noreply@starter.local}
+      MAGIC_LINK_EXPIRY_MINUTES: ${MAGIC_LINK_EXPIRY_MINUTES:-15}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      ENABLE_AUTH: ${ENABLE_AUTH:-true}
+      ENABLE_REGISTRATION: ${ENABLE_REGISTRATION:-true}
+      MAINTENANCE_MODE: ${MAINTENANCE_MODE:-false}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ── Web (React + nginx) ─────────────────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
+volumes:
+  db_data:

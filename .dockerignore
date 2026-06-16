@@ -1,0 +1,17 @@
+node_modules
+api/node_modules
+web/node_modules
+api/data
+data
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+.env
+.env.local
+.env.*.local
+api/dist
+web/dist
+.git
+.gitignore
+docs
+*.md

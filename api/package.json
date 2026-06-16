@@ -1,0 +1,37 @@
+{
+  "name": "@starter/api",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "migrate": "tsx src/migrate.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11",
+    "@fastify/cors": "^10",
+    "@fastify/helmet": "^13",
+    "@fastify/rate-limit": "^11.0.0",
+    "better-sqlite3": "^11",
+    "dotenv": "^16",
+    "fastify": "^5",
+    "fastify-plugin": "^6",
+    "kysely": "^0.29.2",
+    "nanoid": "^5",
+    "nodemailer": "^6",
+    "pg": "^8.21.0",
+    "zod": "^3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7",
+    "@types/node": "^22",
+    "@types/nodemailer": "^6",
+    "@types/pg": "^8.20.0",
+    "tsx": "^4",
+    "typescript": "^5",
+    "vitest": "^4.1.8"
+  }
+}

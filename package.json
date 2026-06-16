@@ -1,0 +1,14 @@
+{
+  "name": "saas-starter-kit",
+  "private": true,
+  "workspaces": ["api", "web"],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=api\" \"npm run dev --workspace=web\"",
+    "build": "npm run build --workspace=api && npm run build --workspace=web",
+    "test": "npm test --workspace=api",
+    "typecheck": "tsc --noEmit --project api/tsconfig.json && tsc --noEmit --project web/tsconfig.app.json"
+  },
+  "devDependencies": {
+    "concurrently": "^9"
+  }
+}

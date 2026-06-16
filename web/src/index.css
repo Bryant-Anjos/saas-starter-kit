@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* Make dark: prefix respond to [data-theme="dark"] on an ancestor */
+@variant dark (&:where([data-theme="dark"] *));
+
+/* ── Dark theme ─────────────────────────────────────────────────── */
+/* Overriding Tailwind v4's --color-* CSS variables means every
+   bg-gray-*, text-gray-*, border-gray-* utility updates automatically
+   with zero changes to JSX class lists (except bg-white / hover:bg-gray-50
+   which need explicit dark: variants because --color-white is shared
+   with text-white on coloured buttons). */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Gray scale — each shade maps to its "inverted" counterpart */
+  --color-gray-50:  oklch(0.130 0.028 261.692); /* → gray-950 (page bg) */
+  --color-gray-100: oklch(0.278 0.033 256.848); /* → gray-800 (hover / subtle border) */
+  --color-gray-200: oklch(0.373 0.034 259.733); /* → gray-700 (border-default) */
+  --color-gray-300: oklch(0.446 0.030 256.802); /* → gray-600 (border-strong / ghost text) */
+  --color-gray-400: oklch(0.551 0.018 264.364); /* → gray-500 (faint text / minor icons) */
+  /* gray-500 kept as-is: neutral midpoint */
+  --color-gray-600: oklch(0.707 0.022 261.325); /* → gray-400 (muted text) */
+  --color-gray-700: oklch(0.872 0.010 258.338); /* → gray-300 (secondary text) */
+  --color-gray-800: oklch(0.928 0.006 264.531); /* → gray-200 */
+  --color-gray-900: oklch(0.985 0.002 247.839); /* → gray-50  (primary text) */
+
+  /* Indigo tints — saturated shades (600–700) stay as-is for buttons */
+  --color-indigo-50:  oklch(0.257 0.090 281.288); /* → indigo-950 */
+  --color-indigo-100: oklch(0.359 0.144 278.697); /* → indigo-900 */
+  --color-indigo-200: oklch(0.398 0.195 277.366); /* → indigo-800 */
+
+  /* Red tints (danger states) */
+  --color-red-50:  oklch(0.170 0.050 22);
+  --color-red-100: oklch(0.240 0.070 22);
+  --color-red-200: oklch(0.300 0.090 22);
+
+  /* Green tints (success states) */
+  --color-green-50: oklch(0.150 0.040 142);
+
+  /* Orange / Yellow tints */
+  --color-orange-50: oklch(0.160 0.040 55);
+  --color-yellow-50: oklch(0.180 0.040 80);
+
+  /* Blue tints */
+  --color-blue-100: oklch(0.220 0.045 240);
+}
+
+/* Native <select> popup inherits color-scheme from its own element in some browsers. */
+[data-theme="dark"] select {
+  color-scheme: dark;
+}
+[data-theme="dark"] option {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-900);
+}
+
+/* To add a new theme, copy the block above, change the selector to
+   [data-theme="your-theme-name"], and adjust the values. */

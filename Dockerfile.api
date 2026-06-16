@@ -1,0 +1,32 @@
+# ── Build stage ───────────────────────────────────────────────────────────────
+FROM node:22-slim AS builder
+WORKDIR /build
+
+# better-sqlite3 is a native module and requires build tools.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 make g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy workspace manifests first for better layer caching.
+COPY package.json package-lock.json ./
+COPY api/package.json ./api/
+COPY web/package.json ./web/
+
+RUN npm ci --workspace=api
+
+COPY api/tsconfig.json ./api/
+COPY api/src ./api/src/
+
+RUN npm run build --workspace=api
+
+# ── Run stage ─────────────────────────────────────────────────────────────────
+FROM node:22-slim AS runner
+WORKDIR /app
+
+COPY --from=builder /build/node_modules ./node_modules
+COPY --from=builder /build/api/dist ./dist
+COPY --from=builder /build/api/package.json ./package.json
+
+ENV NODE_ENV=production
+EXPOSE 3001
+CMD ["node", "dist/index.js"]
